@@ -34,11 +34,11 @@ If you run `cliapp` without any arguments it will print its output to the consol
 
 ```json
 {
-  datasetName: 'edge-throw-except',
-  data: [],
-  generationTime: 1596458170057,
-  centre: '[0, 0]',
-  zoom: null
+  "datasetName": "edge-throw-except",
+  "data": [],
+  "generationTime": 1596458170057,
+  "centre": "[0, 0]",
+  "zoom": null
 }
 ```
 
