@@ -4,7 +4,7 @@ RUN apt-get install -y cron
 RUN apt-get install -y curl
 RUN apt-get install -y jq
 WORKDIR /opt/chimera/bin
-RUN curl https://devops-workshop-4.s3.eu-west-2.amazonaws.com/cliapp --output cliapp
+RUN curl https://devops-command-line-workshop.s3.eu-west-2.amazonaws.com/cliapp --output cliapp
 RUN chmod +x cliapp
 COPY ./run.sh ./run.sh
 RUN chmod +x ./run.sh

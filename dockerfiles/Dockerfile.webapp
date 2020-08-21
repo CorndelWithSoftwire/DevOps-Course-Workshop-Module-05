@@ -2,7 +2,7 @@ FROM ubuntu:xenial
 WORKDIR /opt/chimera/bin
 RUN apt-get update
 RUN apt-get install -y curl
-RUN curl https://devops-workshop-4.s3.eu-west-2.amazonaws.com/webapp --output webapp
+RUN curl https://devops-command-line-workshop.s3.eu-west-2.amazonaws.com/webapp --output webapp
 RUN chmod +x webapp
 ENV WEBAPP_PORT=80
 EXPOSE ${WEBAPP_PORT}
