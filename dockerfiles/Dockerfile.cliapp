@@ -12,4 +12,4 @@ RUN chmod +x ./run.sh
 ENV DATA_FOLDER=/opt/chimera/data
 RUN mkdir /var/log/chimera
 RUN touch /var/log/cron.log
-ENTRYPOINT ./run.sh
+ENTRYPOINT ["./run.sh"]
