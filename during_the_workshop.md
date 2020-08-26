@@ -10,7 +10,7 @@ $ docker run hello-world
 ```
 
 If successful you should see something like this, which helpfully explains exactly what docker has done.
-![Hello, World!](../Images/workshop-01-docker-hello-world.jpg)
+![Hello, World!](./Images/workshop-01-docker-hello-world.jpg)
 
 If you are having problems check these two things:
 1. That Docker Desktop is running
@@ -96,7 +96,7 @@ hello world
 
 You should also be able to see your image in the output of `docker image list`:
 
-![docker image list](../Images/workshop-02-docker-image-list.jpg)
+![docker image list](./Images/workshop-02-docker-image-list.jpg)
 
 Let's add another tag to our image.
 
@@ -106,11 +106,11 @@ $ docker tag hello-world hello-world:v1
 
 Now you should see something more like this:
 
-![docker image list](../Images/workshop-03-docker-image-list.jpg)
+![docker image list](./Images/workshop-03-docker-image-list.jpg)
 
 Note: while we have a new entry the image ID is the same. Both the `v1` and `latest` tag are pointing at the same image.
 
-Now change your Dockerfile to make it print a new message and build it again. You should see that the `latest` tag now has a different image ID. This should emphasie that even though your Dockerfile is mutable, the images produced are not.
+Now change your Dockerfile to make it print a new message and build it again. You should see that the `latest` tag now has a different image ID. This should emphasise that even though your Dockerfile is mutable, the images produced are not.
 
 ## Part 3: Publish an Image
 
