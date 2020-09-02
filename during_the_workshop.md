@@ -38,19 +38,12 @@ You'll notice that Docker has assigned a randomly-generated name to the containe
 Now let's try something slightly more complicated. Running a common web server (nginx) in a container:
 
 ```bash
-$ docker run --publish 8080:80 nginx
-```
-
-Here, we've declared that port 80 on the container should be bound, or published, to port 8080 on your host machine (note the slightly confusing syntax for declaring the port mapping, i.e. host:container). Now point your browser at <http://localhost:8080/> and you should see the nginx start page.
-
-In the above command, we're asking Docker to create and run a new container based on the nginx image. Docker runs the container application in the foreground (in this case, the Nginx web server) and prints any output from that application directly to your terminal. To stop the container, type control-C.
-
-Docker first looks for an image tagged "nginx" on your local machine. If none exists, it will pull an appropriate image from [Docker Hub](https://hub.docker.com/).
-
-Now run the container again, this time using the `--detach` option to run it in the background instead:
-```bash
 $ docker run --detach --publish 8080:80 nginx
 ```
+
+In the above command, we're asking Docker to create and run a new container based on the nginx image. Docker first looks for an image tagged "nginx" on your local machine. If none exists, it will pull an appropriate image from [Docker Hub](https://hub.docker.com/).
+
+Here we've also used the `--detach` option to run it in the background. We've also declared that port 80 on the container should be bound, or published, to port 8080 on your host machine (note the slightly confusing syntax for declaring the port mapping, i.e. host:container). Now point your browser at <http://localhost:8080/> and you should see the nginx start page.
 
 When containers run in the background, you can view their output using `docker logs <container_name>` (where `<container_name>` is the name of the container). Finally, let's stop the container and remove it:
 
