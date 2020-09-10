@@ -148,6 +148,8 @@ Now for something more complicated. In Module 04 we worked with a legacy applica
 
 Fortunately, we already have dockerfiles for each part of the application. You can find these in [./dockerfiles](./dockerfiles). 
 
+When you download [./dockerfiles/run.sh](./dockerfiles/run.sh), make sure to create it with LF line endings so it can run in the Linux container.
+
 This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. From reading the dockerfile and associated script can you work out what it will do?
 
 To complete this section you then need to complete the following tasks:
@@ -159,6 +161,10 @@ Hint: you may find the `-f` option helpful.
 
 ### 02: Run the containers
 Running each container with `docker run` is fairly straightfoward. However, the containers will need a way to communicate; we suggest you create and `--mount` a **shared volume**. You'll also need to `--publish` a port if you want to see your handywork.
+
+Visit localhost:\<port-number>/all_day in a browser to see the webapp displaying data processed by cliapp.
+
+Note for those using Git for Windows: it automatically expands any absolute paths it detects in your command. Use a double slash at the start to prevent this e.g. `//dont/expand/me`
 
 ### 03: Refactor and improve!
 The Dockerfiles and bash script we've provided you aren't as good as they could be. Spend a little time trying to improve them before moving onto the next exercise.
