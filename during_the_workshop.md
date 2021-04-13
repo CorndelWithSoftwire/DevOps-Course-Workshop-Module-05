@@ -182,7 +182,6 @@ When you have completed your YAML file you build and run all your containers wit
 
 You may find the following reference material helpful:
 * [Compose file reference](https://docs.docker.com/compose/compose-file/)
-* [Docker compose cheat sheet](https://devhints.io/docker-compose)
 
 We've provided you with a _very_ minimal docker compose file below. Using the reference material above and your answers to part 4 complete the file so you that you can reproduce the same result as part 4 with only a single `docker-compose up` command?
 
