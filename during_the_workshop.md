@@ -223,7 +223,7 @@ $ docker-compose up --build
 ## Part 7: Improve the cliapp image (stretch goal)
 The cliapp image currently generates three datasets and then exits. You need to manually run it again in order to get more recent data. Let's update it so that it runs a scheduled job instead.
 
-First, write a crontab file which runs the `run.sh` file every five minutes (or every minute for faster testing) and redirects the output to `/var/log/cron.log`. Note that the cronjob will not run from the Dockerfile's `WORKDIR`.
+First, write a crontab file which runs the `run.sh` file every five minutes (or every minute for faster testing) and redirects the output to `/var/log/cron.log`. Note that the cronjob will not run from the Dockerfile's `WORKDIR`, and make sure you've set LF line endings on the file.
 <details><summary>Expand to see the cron job</summary>`* * * * * /opt/chimera/bin/run.sh >> /var/log/cron.log 2>&1`</details>
 
 Then update the Dockerfile to accomplish the following steps:
