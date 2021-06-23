@@ -242,9 +242,7 @@ You will probably see some error messages at this point (after the job has had a
 <details>
 <summary>Expand for hints</summary>
 
-- The `run.sh` file uses `./cliapp` but the cronjob runs from a different folder. Either:
-  - Change it to a full file path - `/opt/chimera/bin/cliapp`
-  - Or change it to `cliapp` and add the `/opt/chimera/bin` folder to the PATH environment variable, via an `ENV` line in the Dockerfile. 
+- The `run.sh` file uses `./cliapp` but the cronjob runs from a different folder. Change it to a full file path: `/opt/chimera/bin/cliapp`
 - Run this command at the start of the `ENTRYPOINT` to make environment variables available to the cronjob `printenv >> /etc/environment`. Otherwise, DATA_FOLDER or REDIS_HOST etc will not be set during the cronjob.
 
 </details>
