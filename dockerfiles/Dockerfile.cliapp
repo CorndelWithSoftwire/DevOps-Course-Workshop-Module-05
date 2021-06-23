@@ -1,6 +1,5 @@
 FROM ubuntu:xenial
 RUN apt-get update
-RUN apt-get install -y cron
 RUN apt-get install -y curl
 RUN apt-get install -y jq
 WORKDIR /opt/chimera/bin
@@ -11,5 +10,5 @@ RUN chmod +x ./run.sh
 # The data folder should be shared with the webapp
 ENV DATA_FOLDER=/opt/chimera/data
 RUN mkdir /var/log/chimera
-RUN touch /var/log/cron.log
+
 ENTRYPOINT ["./run.sh"]

@@ -52,9 +52,9 @@ $ docker container stop <container_name>
 $ docker container rm <container_name>
 ```
 
-## Part 2 - Write a dockerfile
+## Part 2 - Write a Dockerfile
 
-Now we've seen docker working, let us build a dockerfile. We'll use an example from the reading material. In a new directory, create a file called `Dockerfile` with the following content.
+Now we've seen docker working, let us build a Dockerfile. We'll use an example from the reading material. In a new directory, create a file called `Dockerfile` with the following content.
 
 ```dockerfile
 FROM alpine
@@ -146,11 +146,11 @@ $ docker push <your_username>/hello-world:1.0
 
 Now for something more complicated. In Module 04 we worked with a legacy application called the Chimera Reporting Server. In the remainder of this exercise we are going to convert that application to using Docker. This process is sometimes called "dockerising" or "containerising" an application.
 
-Fortunately, we already have dockerfiles for each part of the application. You can find these in [./dockerfiles](./dockerfiles). 
+Fortunately, we already have Dockerfiles for each part of the application. You can find these in [./dockerfiles](./dockerfiles). 
 
 When you download [./dockerfiles/run.sh](./dockerfiles/run.sh), make sure to create it with LF line endings so it can run in the Linux container.
 
-This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. From reading the dockerfile and associated script can you work out what it will do?
+This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. From reading the Dockerfile and associated script can you work out what it will do?
 
 To complete this section you then need to complete the following tasks:
 
@@ -169,12 +169,12 @@ Note for those using Git for Windows: it automatically expands any absolute path
 ### 03: Refactor and improve!
 The Dockerfiles and bash script we've provided you aren't as good as they could be. Spend a little time trying to improve them before moving onto the next exercise.
 
-To get started, take a look at docker's official [best practices guide for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/).
+To get started, take a look at Docker's official [best practices guide for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/).
 
 ## Part 5: Docker Compose
 In the previous section we ended up constructing some reasonably long command line statements to build, configure and run our containers. This is error prone and doesn't scale well; consider how fiddly it was with just two containers!
 
-Fortunately there are tools that can help us automate these processes. We are going to use one called Docker Compose. You may already have this installed. Check by runing `docker-compose --version` in your shell. (If not, you can find installation instructions [here](https://docs.docker.com/compose/install/)).
+Fortunately there are tools that can help us automate these processes. We are going to use one called Docker Compose. You may already have this installed. Check by running `docker-compose --version` in your shell. (If not, you can find installation instructions [here](https://docs.docker.com/compose/install/)).
 
 To use docker compose you create a YAML file called `docker-compose.yml` that describes the **services** you want; how to build them; and what volumes, ports and other settings you want to run them with. (For the purposes of this exercise you can consider services to be synonymous with containers.)
 
@@ -216,7 +216,31 @@ Hint: to rebuild your containers you may need to call docker-compose with the `-
 $ docker-compose up --build
 ```
 
-## Part 7: nginx (stretch)
+## Part 7: Improve the cliapp image (stretch goal)
+The cliapp image currently generates three datasets and then exits. You need to manually run it again in order to get more recent data. Let's update it so that it runs a scheduled job instead.
+
+First, write a crontab file which runs the `run.sh` file every five minutes (or every minute for faster testing) and redirects the output to `/var/log/cron.log`. Note that the cronjob will not run from the Dockerfile's `WORKDIR`.
+<details><summary>Expand to see the cron job</summary>`* * * * * /opt/chimera/bin/run.sh >> /var/log/cron.log 2>&1`</details>
+
+Then update the Dockerfile to accomplish the following steps:
+1) Install cron with `apt-get`
+2) Create an empty log file at `/var/log/cron.log` that the job can send its output to
+3) `COPY` the crontab file into the image.
+4) Load the crontab file by running `crontab your_crontab_file`
+5) Write an `ENTRYPOINT` that starts `cron` and doesn't just exit immediately. Otherwise the container will exit immediately, without running scheduled jobs. <details><summary>Answer</summary>You can either run cron in the foreground with `cron -f` or perhaps more usefully you could print the logs with tail, if your cronjob is directing its output to a log file, e.g.: `cron && tail -f /var/log/cron.log`. This will save you having to dig into the container to debug issues</details>
+
+You will probably see some error messages at this point (after the job has had a chance to run) that you need to address.
+<details>
+<summary>Hints</summary>
+
+- The `run.sh` file uses `./cliapp` but the cronjob runs from a different folder. Either:
+  - Change it to a full file path - `/opt/chimera/bin/cliapp`
+  - Or change it to `cliapp` and add the `/opt/chimera/bin` folder to the PATH environment variable, via an `ENV` line in the Dockerfile. 
+- Run this command at the start of the `ENTRYPOINT` to make environment variables available to the cronjob `printenv >> /etc/environment`. Otherwise e.g. DATA_FOLDER or REDIS_HOST etc will not be set during the cronjob.
+
+</details>
+
+## Part 8: nginx (stretch)
 Docker-compose lets us rearchitect applications very easily. In this part your task is to introduce [nginx](https://www.nginx.com/), a very lightweight webserver, in front of the webapp. This will give us more control over the incoming traffic.
 
 In this case we want to introduce `nginx` and use its rewrite functionality to change the URLs used to access the map. Specifically, we want to only serve maps if the user visits an endpoint starting `/maps/dataset/`. For example, visiting `localhost:8080/maps/dataset/all_hour` should return the `all_hour` dataset.
@@ -230,11 +254,3 @@ You will need to:
 * Create a nginx config file and `COPY` it to the location in the container that nginx expects to find its config files
 * Configure nginx as a [reverse proxy](https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/)
 * Configure [rewrite rules](https://www.nginx.com/blog/creating-nginx-rewrite-rules/) in nginx
-
-## Part 8: API (stretch)
-Well done for getting so far. In the time you have left create an API in python to return raw datasets directly from the Redis server.
-
-Your requirements for this section:
-* The API should be hosted on its own container.
-* Any requests to `/api` should be routed to the API by nginx
-* Any previously set-up functionality should not change
