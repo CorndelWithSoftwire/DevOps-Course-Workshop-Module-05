@@ -220,27 +220,32 @@ Hint: to rebuild your containers you may need to call docker-compose with the `-
 $ docker-compose up --build
 ```
 
-## Part 7: Improve the cliapp image (stretch goal)
+## Part 7: Improve the cliapp image (stretch)
 The cliapp image currently generates three datasets and then exits. You need to manually run it again in order to get more recent data. Let's update it so that it runs a scheduled job instead.
 
 First, write a crontab file which runs the `run.sh` file every five minutes (or every minute for faster testing) and redirects the output to `/var/log/cron.log`. Note that the cronjob will not run from the Dockerfile's `WORKDIR`, and make sure you've set LF line endings on the file.
-<details><summary>Expand to see the cron job</summary>`* * * * * /opt/chimera/bin/run.sh >> /var/log/cron.log 2>&1`</details>
+
+<details><summary>Expand to see the cron job definition </summary>
+
+`* * * * * /opt/chimera/bin/run.sh >> /var/log/cron.log 2>&1`  
+The `>>` redirects "stdout" to append to a file and `2>&1` combines stderr (i.e. error messages) with stdout
+</details>
 
 Then update the Dockerfile to accomplish the following steps:
-1) Install cron with `apt-get`
-2) Create an empty log file at `/var/log/cron.log` that the job can send its output to
+1) Install cron with `apt-get`.
+2) Create an empty log file at `/var/log/cron.log` for the job to send its output to.
 3) `COPY` the crontab file into the image.
-4) Load the crontab file by running `crontab your_crontab_file`
+4) Load the crontab file by running `crontab your_crontab_file`.
 5) Write an `ENTRYPOINT` that starts `cron` and doesn't just exit immediately. Otherwise the container will exit immediately, without running scheduled jobs. <details><summary>Answer</summary>You can either run cron in the foreground with `cron -f` or perhaps more usefully you could print the logs with tail, if your cronjob is directing its output to a log file, e.g.: `cron && tail -f /var/log/cron.log`. This will save you having to dig into the container to debug issues</details>
 
 You will probably see some error messages at this point (after the job has had a chance to run) that you need to address.
 <details>
-<summary>Hints</summary>
+<summary>Expand for hints</summary>
 
 - The `run.sh` file uses `./cliapp` but the cronjob runs from a different folder. Either:
   - Change it to a full file path - `/opt/chimera/bin/cliapp`
   - Or change it to `cliapp` and add the `/opt/chimera/bin` folder to the PATH environment variable, via an `ENV` line in the Dockerfile. 
-- Run this command at the start of the `ENTRYPOINT` to make environment variables available to the cronjob `printenv >> /etc/environment`. Otherwise e.g. DATA_FOLDER or REDIS_HOST etc will not be set during the cronjob.
+- Run this command at the start of the `ENTRYPOINT` to make environment variables available to the cronjob `printenv >> /etc/environment`. Otherwise, DATA_FOLDER or REDIS_HOST etc will not be set during the cronjob.
 
 </details>
 
