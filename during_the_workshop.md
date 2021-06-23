@@ -182,6 +182,10 @@ When you have completed your YAML file you build and run all your containers wit
 
 You may find the following reference material helpful:
 * [Compose file reference](https://docs.docker.com/compose/compose-file/)
+* More specifically:
+  * You need a [build](https://docs.docker.com/compose/compose-file/compose-file-v3/#build) section for each service where you want to build the image yourself, which you do for both the webapp and cliapp.
+  * You need the cliapp and webapp to share a [volume](https://docs.docker.com/compose/compose-file/compose-file-v3/#volume-configuration-reference)
+  * You need to publish a [port](https://docs.docker.com/compose/compose-file/compose-file-v3/#ports) for the webapp to be accessible on your host machine.
 
 We've provided you with a _very_ minimal docker compose file below. Using the reference material above and your answers to part 4 complete the file so you that you can reproduce the same result as part 4 with only a single `docker-compose up` command?
 
@@ -202,7 +206,7 @@ volumes:
 ## Part 6: Redis
 In this part of the workshop we will demonstrate how easy it is to add new functionality using containers. Chimera can be configured to use [Redis](https://redis.io/topics/introduction), an in-memory data store, as an alternative to the data folder in the shared volume. (Redis is more sophisticated than a basic file system; we might want to use it as a remote cache, or take advantage of its messaging brokering features. You don't need to understand the features of Redis for the purposes of this exercise, but do read about it if you're interested.)
 
-To do this you need to set two environment variables (`REDIS_HOST` and `REDIS_PORT`) for both the `webapp` and `cliapp`. You'll also need to call `cliapp` with the `-r` flag to enable redis mode. Finally, you should remove the shared data volume from docker-compose and the Dockerfiles - you won't need it anymore!
+To do this you need to set two environment variables (`REDIS_HOST` and `REDIS_PORT`) for both the `webapp` and `cliapp`. You'll also need to update the `run.sh` file to run `cliapp` with the `-r` flag to enable redis mode. Finally, you should remove the shared data volume from docker-compose and the Dockerfiles - you won't need it anymore!
 
 You will need to:
  * Find a Redis image on [Docker Hub](https://hub.docker.com/) and add it to your docker-compose file as a service.
