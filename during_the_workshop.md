@@ -144,6 +144,8 @@ $ docker push <your_username>/hello-world:1.0
 
 ## Part 4: Dockerise Chimera
 
+> :warning: **M1 Mac users** The cliapp is built for x86-64. To run it on an ARM machine pass `--platform linux/amd64` to the docker build command. You can also try using [gitpod](gitpod.io#https://github.com/CorndelWithSoftwire/DevOps-Course-Workshop-Module-05).
+
 Now for something more complicated. In Module 04 we worked with a legacy application called the Chimera Reporting Server. In the remainder of this exercise we are going to convert that application to using Docker. This process is sometimes called "dockerising" or "containerising" an application.
 
 Fortunately, we already have Dockerfiles for each part of the application. You can find these in [./dockerfiles](./dockerfiles). 
@@ -160,7 +162,7 @@ You will need to build each container separately using `docker build`. Make sure
 Hint: you may find the `-f` option helpful.
 
 ### 02: Run the containers
-Running each container with `docker run` is fairly straightfoward. However, the containers will need a way to communicate; we suggest you create and `--mount` a **shared volume**. You'll also need to `--publish` a port if you want to see your handywork.
+Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you create and `--mount` a **shared volume**. You'll also need to `--publish` a port if you want to see your handiwork.
 
 Visit localhost:\<port-number>/all_day in a browser to see the webapp displaying data processed by cliapp.
 
