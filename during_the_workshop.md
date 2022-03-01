@@ -176,11 +176,11 @@ To get started, take a look at Docker's official [best practices guide for writi
 ## Part 5: Docker Compose
 In the previous section we ended up constructing some reasonably long command line statements to build, configure and run our containers. This is error prone and doesn't scale well; consider how fiddly it was with just two containers!
 
-Fortunately there are tools that can help us automate these processes. We are going to use one called Docker Compose. You may already have this installed. Check by running `docker-compose --version` in your shell. (If not, you can find installation instructions [here](https://docs.docker.com/compose/install/)).
+Fortunately there are tools that can help us automate these processes. We are going to use one called Docker Compose. This will be already installed if you have Docker Desktop on Windows or Mac (If you're on Linux you can find installation instructions [here](https://docs.docker.com/compose/install/)).
 
 To use docker compose you create a YAML file called `docker-compose.yml` that describes the **services** you want; how to build them; and what volumes, ports and other settings you want to run them with. (For the purposes of this exercise you can consider services to be synonymous with containers.)
 
-When you have completed your YAML file you build and run all your containers with a single command: `docker-compose up`.
+When you have completed your YAML file you build and run all your containers with a single command: `docker compose up`.
 
 You may find the following reference material helpful:
 * [Compose file reference](https://docs.docker.com/compose/compose-file/)
@@ -189,7 +189,7 @@ You may find the following reference material helpful:
   * You need the cliapp and webapp to share a [volume](https://docs.docker.com/compose/compose-file/compose-file-v3/#volume-configuration-reference)
   * You need to publish a [port](https://docs.docker.com/compose/compose-file/compose-file-v3/#ports) for the webapp to be accessible on your host machine.
 
-We've provided you with a _very_ minimal docker compose file below. Using the reference material above and your answers to part 4 complete the file so you that you can reproduce the same result as part 4 with only a single `docker-compose up` command?
+We've provided you with a _very_ minimal docker compose file below. Using the reference material above and your answers to part 4 complete the file so you that you can reproduce the same result as part 4 with only a single `docker compose up` command?
 
 ```yaml
 # Copy this into a file called `docker-compose.yml`
@@ -208,18 +208,18 @@ volumes:
 ## Part 6: Redis
 In this part of the workshop we will demonstrate how easy it is to add new functionality using containers. Chimera can be configured to use [Redis](https://redis.io/topics/introduction), an in-memory data store, as an alternative to the data folder in the shared volume. (Redis is more sophisticated than a basic file system; we might want to use it as a remote cache, or take advantage of its message brokering features. You don't need to understand the features of Redis for the purposes of this exercise, but do read about it if you're interested.)
 
-To do this you need to set two environment variables (`REDIS_HOST` and `REDIS_PORT`) for both the `webapp` and `cliapp`. You'll also need to update the `run.sh` file to run `cliapp` with the `-r` flag to enable redis mode. Finally, you should remove the shared data volume from docker-compose and the Dockerfiles - you won't need it anymore!
+To do this you need to set two environment variables (`REDIS_HOST` and `REDIS_PORT`) for both the `webapp` and `cliapp`. You'll also need to update the `run.sh` file to run `cliapp` with the `-r` flag to enable redis mode. Finally, you should remove the shared data volume from `docker-compose.yml` and the Dockerfiles - you won't need it anymore!
 
 You will need to:
- * Find a Redis image on [Docker Hub](https://hub.docker.com/) and add it to your docker-compose file as a service.
+ * Find a Redis image on [Docker Hub](https://hub.docker.com/) and add it to your `docker-compose.yml` file as a service.
  * Set `REDIS_PORT` to the default port 6379
  * Set `REDIS_HOST` to the host name of the redis container
  * Ensure that the `-r` flag is passed to `cliapp` on the command line.
 
-Hint: to rebuild your containers you may need to call docker-compose with the `--build` flag, e.g.
+Hint: to rebuild your containers you may need to call `docker compose` with the `--build` flag, e.g.
 
 ```bash
-$ docker-compose up --build
+$ docker compose up --build
 ```
 
 ## Part 7: Improve the cliapp image (stretch)
