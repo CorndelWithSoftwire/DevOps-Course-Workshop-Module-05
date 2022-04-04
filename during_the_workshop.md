@@ -148,21 +148,50 @@ $ docker push <your_username>/hello-world:1.0
 
 Now for something more complicated. In Module 04 we worked with a legacy application called the Chimera Reporting Server. In the remainder of this exercise we are going to convert that application to using Docker. This process is sometimes called "dockerising" or "containerising" an application.
 
-Fortunately, we already have Dockerfiles for each part of the application. You can find these in [./dockerfiles](./dockerfiles). 
+Fortunately, we already have a Dockerfile for running the webapp and a half-written Dockerfile for running the CLI. You can find these in [./dockerfiles](./dockerfiles). Clone this repository to get a local copy of that folder.
 
-When you download [./dockerfiles/run.sh](./dockerfiles/run.sh), make sure to create it with LF line endings so it can run in the Linux container.
+This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. 
 
-This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. From reading the Dockerfile and associated script can you work out what it will do?
+### 01: Build the images
+You will need to build each image separately using `docker build`.
 
-To complete this section you then need to complete the following tasks:
+First, try building an image from Dockerfile.webapp.
+- Use the `-f` option of "docker run" to specify a filename. If you don't, then it will look for a file called "Dockerfile".
+- Use the `--tag` or `-t` option to set a "tag". This will label the image with whatever name you choose, so that you can easily refer to the image in the future.
 
-### 01: Build the containers
-You will need to build each container separately using `docker build`. Make sure you choose an appropriate tag.
+Next, try building the image for the CLI app, but this will require completing the Dockerfile. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
 
-Hint: you may find the `-f` option helpful.
+Scroll down this [documentation page](https://docs.docker.com/engine/reference/builder) for how to use the different Dockerfile commands. Try building the image now and after each change to check if there are any issues.
+
+<details markdown="1"><summary>Hints</summary>
+
+1. The Dockerfile.cliapp currently fails to build! If you look at the error message, it is failing to run the `curl` command because it doesn't recognise it. You need to install `curl`. Do this in the same way that `jq` is being installed (see the `RUN apt-get install ...` line).
+1. The purpose of the image is to run the `run.sh` file in the dockerfiles folder. To do this, it needs a copy of the file stored inside the image. So add an appropriate `COPY` command to your Dockerfile.
+1. After copying the file in, let's configure it as executable. On Linux, you do this by running a shell command e.g. `chmod +x ./my-file.sh`. Add a `RUN` command to the Dockerfile that makes the run.sh file executable.
+1. At the moment, nothing happens if you build and run a container based on this Dockerfile. You need to tell it what to do when starting the container. Add an `ENTRYPOINT` command that executes the `run.sh` file.
+
+</details>
 
 ### 02: Run the containers
-Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you create and `--mount` a **shared volume**. You'll also need to `--publish` a port if you want to see your handiwork.
+Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
+
+<details markdown="1"><summary>Click here for help with the --mount option</summary>
+
+The `--mount` and `--volume` arguments have the same functionality for creating volumes but with different syntax. The syntax for `--mount` is more verbose, but that means it is more explicit and easier to understand.
+
+You need to provide `--mount` with three things:
+- The "type" of mount - in this case we want a "volume".
+- The "source" - in the case of a volume, this means the name of the volume.
+- The "destination" - the folder inside the container where the volume will be accessible. This will need to match where the CLI app is saving files and where the web app is reading from.
+
+So your command will look something like the following but with the correct values filled in:
+```
+docker run --mount type=volume,source=choose-a-name,destination=/path/to/folder 
+```
+
+</details>
+
+You'll also need to `--publish` a port when running the web app container in order to view the website. This means forwarding traffic from a port on your computer to a port on the container.
 
 Visit localhost:\<port-number>/all_day in a browser to see the webapp displaying data processed by cliapp.
 
