@@ -148,9 +148,7 @@ $ docker push <your_username>/hello-world:1.0
 
 Now for something more complicated. In Module 04 we worked with a legacy application called the Chimera Reporting Server. In the remainder of this exercise we are going to convert that application to using Docker. This process is sometimes called "dockerising" or "containerising" an application.
 
-Fortunately, we already have a Dockerfile for running the webapp and a half-written Dockerfile for running the CLI. You can find these in [./dockerfiles](./dockerfiles). 
-
-Clone this repository so you have a copy of that folder. If you are on Windows and you create the files yourself, make sure to create the [run.sh](./dockerfiles/run.sh) file with LF line endings so it is compatible with the Linux container.
+Fortunately, we already have a Dockerfile for running the webapp and a half-written Dockerfile for running the CLI. You can find these in [./dockerfiles](./dockerfiles). Clone this repository to get a local copy of that folder.
 
 This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. 
 
@@ -161,11 +159,18 @@ First, try building an image from Dockerfile.webapp.
 - Use the `-f` option of "docker run" to specify a filename. If you don't, then it will look for a file called "Dockerfile".
 - Use the `--tag` or `-t` option to set a "tag". This will label the image with whatever name you choose, so that you can easily refer to the image in the future.
 
-Next, try building the image for the CLI app, but this will require completing the Dockerfile. You can scroll down this [documentation page](https://docs.docker.com/engine/reference/builder) for how to use the different commands. Rebuild the image after each change to check if you get any errors.
+Next, try building the image for the CLI app, but this will require completing the Dockerfile. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
+
+Scroll down this [documentation page](https://docs.docker.com/engine/reference/builder) for how to use the different Dockerfile commands. Try building the image now and after each change to check if there are any issues.
+
+<details markdown="1"><summary>Hints</summary>
+
 1. The Dockerfile.cliapp currently fails to build! If you look at the error message, it is failing to run the `curl` command because it doesn't recognise it. You need to install `curl`. Do this in the same way that `jq` is being installed (see the `RUN apt-get install ...` line).
 1. The purpose of the image is to run the `run.sh` file in the dockerfiles folder. To do this, it needs a copy of the file stored inside the image. So add an appropriate `COPY` command to your Dockerfile.
 1. After copying the file in, let's configure it as executable. On Linux, you do this by running a shell command e.g. `chmod +x ./my-file.sh`. Add a `RUN` command to the Dockerfile that makes the run.sh file executable.
 1. At the moment, nothing happens if you build and run a container based on this Dockerfile. You need to tell it what to do when starting the container. Add an `ENTRYPOINT` command that executes the `run.sh` file.
+
+</details>
 
 ### 02: Run the containers
 Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
