@@ -170,6 +170,20 @@ Scroll down this [documentation page](https://docs.docker.com/engine/reference/b
 1. After copying the file in, let's configure it as executable. On Linux, you do this by running a shell command e.g. `chmod +x ./my-file.sh`. Add a `RUN` command to the Dockerfile that makes the run.sh file executable.
 1. At the moment, nothing happens if you build and run a container based on this Dockerfile. You need to tell it what to do when starting the container. Add an `ENTRYPOINT` command that executes the `run.sh` file.
 
+<details markdown="1"><summary>Click here for answers</summary>
+
+1. `RUN apt-get install -y curl`
+    - This must be done before the `RUN curl ...` line.
+    - Or better yet, modify the existing line for jq instead: `RUN apt-get install -y jq curl`. This will installing both jq and curl. 
+1. `COPY ./run.sh ./run.sh`
+    - This takes the run.sh file from the "build context" (the folder on your machine where the build is happening) and saves it as run.sh in the current WORKDIR (a location within the image).
+    - If you build the image by running `docker build -f dockerfiles/Dockerfile.cliapp .` from the parent folder, then your build context is that parent folder. So your COPY command should be `COPY ./dockerfiles/run.sh ./run.sh` in order to point to the run.sh file correctly.
+1. `RUN chmod +x ./run.sh`
+    - This should go directly after the COPY command 
+1. `ENTRYPOINT [ "./run.sh" ]`
+
+</details>
+
 </details>
 
 ### 02: Run the containers
