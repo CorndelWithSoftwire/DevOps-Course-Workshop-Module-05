@@ -150,16 +150,20 @@ Now for something more complicated. In Module 04 we worked with a legacy applica
 
 Fortunately, we already have a Dockerfile for running the webapp and a half-written Dockerfile for running the CLI. You can find these in [./dockerfiles](./dockerfiles). Clone this repository to get a local copy of that folder.
 
-This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently. 
+This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently.
 
-### 01: Build the images
+### 01: Build the webapp
+
 You will need to build each image separately using `docker build`.
 
 First, try building an image from Dockerfile.webapp.
+
 - Use the `-f` option of `docker build` to specify a filename. If you don't, then it will look for a file called "Dockerfile".
 - Use the `--tag` or `-t` option to set a "tag". This will label the image with whatever name you choose, so that you can easily refer to the image in the future.
 
-Next, try building the image for the CLI app, but this will require completing the Dockerfile. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
+### 02: Finish and build the cliapp Dockerfile
+
+Next, try building the image for the CLI app, but **this will require completing the Dockerfile**. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
 
 Scroll down this [documentation page](https://docs.docker.com/engine/reference/builder) for how to use the different Dockerfile commands. Try building the image now and after each change to check if there are any issues.
 
@@ -173,20 +177,21 @@ Scroll down this [documentation page](https://docs.docker.com/engine/reference/b
 <details markdown="1"><summary>Click here for answers</summary>
 
 1. `RUN apt-get install -y curl`
-    - This must be done before the `RUN curl ...` line.
-    - Or better yet, modify the existing line for jq instead: `RUN apt-get install -y jq curl`. This installs both jq and curl. 
+   - This must be done before the `RUN curl ...` line.
+   - Or better yet, modify the existing line for jq instead: `RUN apt-get install -y jq curl`. This installs both jq and curl.
 1. `COPY ./run.sh ./run.sh`
-    - This takes the run.sh file from the "build context" (the folder on your machine where the build is happening) and saves it as run.sh in the current WORKDIR (a location within the image).
-    - If you build the image by running `docker build -f dockerfiles/Dockerfile.cliapp .` from the parent folder, then your build context is that parent folder. So your COPY command should be `COPY ./dockerfiles/run.sh ./run.sh` in order to point to the run.sh file correctly.
+   - This takes the run.sh file from the "build context" (the folder on your machine where the build is happening) and saves it as run.sh in the current WORKDIR (a location within the image).
+   - If you build the image by running `docker build -f dockerfiles/Dockerfile.cliapp .` from the parent folder, then your build context is that parent folder. So your COPY command should be `COPY ./dockerfiles/run.sh ./run.sh` in order to point to the run.sh file correctly.
 1. `RUN chmod +x ./run.sh`
-    - This should go directly after the COPY command 
+   - This should go directly after the COPY command
 1. `ENTRYPOINT [ "./run.sh" ]`
 
 </details>
 
 </details>
 
-### 02: Run the containers
+### 03: Run the containers
+
 Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
 
 <details markdown="1"><summary>Click here for help with the --mount option</summary>
@@ -211,12 +216,14 @@ Visit localhost:\<port-number>/all_day in a browser to see the webapp displaying
 
 Note for those using Git for Windows: it automatically expands any absolute paths it detects in your command. Use a double slash at the start to prevent this e.g. `//dont/expand/me`
 
-### 03: Refactor and improve!
+### 04: Refactor and improve!
+
 The Dockerfiles and bash script we've provided you aren't as good as they could be. Spend a little time trying to improve them before moving onto the next exercise.
 
 To get started, take a look at Docker's official [best practices guide for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/).
 
 ## Part 5: Docker Compose
+
 In the previous section we ended up constructing some reasonably long command line statements to build, configure and run our containers. This is error prone and doesn't scale well; consider how fiddly it was with just two containers!
 
 Fortunately there are tools that can help us automate these processes. We are going to use one called Docker Compose. This will be already installed if you have Docker Desktop on Windows or Mac (If you're on Linux you can find installation instructions [here](https://docs.docker.com/compose/install/)).
