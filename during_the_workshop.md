@@ -156,7 +156,7 @@ This application will run slightly differently to the previous module. The `weba
 You will need to build each image separately using `docker build`.
 
 First, try building an image from Dockerfile.webapp.
-- Use the `-f` option of "docker run" to specify a filename. If you don't, then it will look for a file called "Dockerfile".
+- Use the `-f` option of `docker build` to specify a filename. If you don't, then it will look for a file called "Dockerfile".
 - Use the `--tag` or `-t` option to set a "tag". This will label the image with whatever name you choose, so that you can easily refer to the image in the future.
 
 Next, try building the image for the CLI app, but this will require completing the Dockerfile. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
