@@ -211,7 +211,7 @@ The webapp should serve a website until it is stopped. You will also need to `--
 
 ### 04: Mount a shared volume
 
-We ca now run our containers independently, but we want to display the data the cliapp generates in the webapp. For this containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
+We can now run our containers independently, but we want to display the data the cliapp generates in the webapp. For this, containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
 
 ```text
      --------------              --------------        publish port
