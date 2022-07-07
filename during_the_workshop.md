@@ -161,7 +161,7 @@ Fortunately, we already have a Dockerfile for running the webapp and a half-writ
 
 This application will run slightly differently to the previous module. The `webapp` container will still serve a simple website, but the `cliapp` container behaves slightly differently.
 
-### 01: Build the webapp
+### 01: Build the webapp image
 
 You will need to build each image separately using `docker build`.
 
