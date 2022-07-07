@@ -203,11 +203,40 @@ If you are on Windows and you create a `run.sh` file yourself, instead of using 
 
 ### 03: Run the containers
 
-Running each container with `docker run` is fairly straightforward. However, the containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
+Try running each container with `docker run` and make sure they work.
+
+The cliapp should run its script and then exit.
+
+The webapp should serve a website until it is stopped. You will also need to `--publish` a port when running the web app container in order to view the website at `http://localhost:<published-port-number>/`.
+
+### 04: Mount a shared volume
+
+We ca now run our containers independently, but we want to display the data the cliapp generates in the webapp. For this containers will need a way to communicate; we suggest you mount a [**named volume**](https://docs.docker.com/storage/volumes/). Use the same volume for both containers so that the "webapp" container can access files created by the "cliapp" container.
+
+```text
+     --------------              --------------        publish port
+    |    cliapp    |            |    webapp    | :80 <---------------> local port
+    |   container  |            |   container  |
+     --------------              --------------
+               \                  ∧
+                \                /
+                 \              /
+    Writes to     \            /   Reads from
+ /opt/chimera/data \          / /opt/chimera/data
+                    ∨        /
+                 ----------------
+                | shared volume  |
+                 ----------------
+```
+
+Use `docker run` commands to run the cliapp to write datasets to a shared volume, then run the webapp using the same volume.
+Don't forget to publish a port for the webapp if you want to see your handiwork.
+
+If you're not sure where to start, have a look at the [docker run docs](https://docs.docker.com/engine/reference/commandline/run/#add-bind-mounts-or-volumes-using-the---mount-flag) or expand the hint below. Docker volumes are introduced in the reading material, but you could take a look at this [guide to Docker Volumes](https://www.digitalocean.com/community/tutorials/how-to-share-data-between-docker-containers) for a more practical introduction.
 
 <details markdown="1"><summary>Click here for help with the --mount option</summary>
 
-The `--mount` and `--volume` arguments have the same functionality for creating volumes but with different syntax. The syntax for `--mount` is more verbose, but that means it is more explicit and easier to understand.
+The `--mount` and `--volume/-v` arguments have the same functionality for creating volumes but with different syntax. The syntax for `--mount` is more verbose, but that means it is more explicit and can be easier to understand.
 
 You need to provide `--mount` with three things:
 
@@ -217,19 +246,17 @@ You need to provide `--mount` with three things:
 
 So your command will look something like the following but with the correct values filled in:
 
-```
+```bash
 docker run --mount type=volume,source=choose-a-name,destination=/path/to/folder
 ```
 
 </details>
 
-You'll also need to `--publish` a port when running the web app container in order to view the website. This means forwarding traffic from a port on your computer to a port on the container.
-
-Visit localhost:\<port-number>/all_day in a browser to see the webapp displaying data processed by cliapp.
+Once that's done visit localhost:\<port-number>/all_day in a browser to see the webapp displaying data processed by cliapp.
 
 Note for those using Git for Windows: it automatically expands any absolute paths it detects in your command. Use a double slash at the start to prevent this e.g. `//dont/expand/me`
 
-### 04: Refactor and improve!
+### 05: Refactor and improve!
 
 The Dockerfiles and bash script we've provided you aren't as good as they could be. Spend a little time trying to improve them before moving onto the next exercise.
 
