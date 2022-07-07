@@ -172,7 +172,7 @@ First, try building an image from Dockerfile.webapp.
 
 ### 02: Finish and build the cliapp Dockerfile
 
-Next, try building the image for the CLI app, but **this will require completing the Dockerfile**. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file. If you are on Windows and you create a `run.sh` file yourself (instead of using git), make sure to create it with LF line endings so it is compatible with the Linux container.
+Next, try building the image for the CLI app, but **this will require completing the Dockerfile**. The aim is to have a container that runs the provided [run.sh](./dockerfiles/run.sh) file.
 
 Scroll down this [documentation page](https://docs.docker.com/engine/reference/builder) for how to use the different Dockerfile commands. Try building the image now and after each change to check if there are any issues.
 
@@ -182,6 +182,8 @@ Scroll down this [documentation page](https://docs.docker.com/engine/reference/b
 1. The purpose of the image is to run the `run.sh` file in the dockerfiles folder. To do this, it needs a copy of the file stored inside the image. So add an appropriate `COPY` command to your Dockerfile.
 1. After copying the file in, let's configure it as executable. On Linux, you do this by running a shell command e.g. `chmod +x ./my-file.sh`. Add a `RUN` command to the Dockerfile that makes the run.sh file executable.
 1. At the moment, nothing happens if you build and run a container based on this Dockerfile. You need to tell it what to do when starting the container. Add an `ENTRYPOINT` command that executes the `run.sh` file.
+
+If you are on Windows and you create a `run.sh` file yourself, instead of using the one provided, make sure to create it with LF line endings so it is compatible with the Linux container.
 
 <details markdown="1"><summary>Click here for answers</summary>
 
