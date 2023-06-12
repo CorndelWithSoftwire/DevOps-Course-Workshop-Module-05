@@ -64,7 +64,7 @@ FROM alpine
 ENTRYPOINT ["echo", "Hello World"]
 ```
 
-Then build and run it with the following command. The `.` is important; it's the build context and refers to the current directory.
+Then build and run it with the following command, but make sure you run it from the directory where the new Dockerfile is. The `.` is important; it's the build context and refers to the current directory.
 
 ```bash
 $ docker build --tag hello-world .
